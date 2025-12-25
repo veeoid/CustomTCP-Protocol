@@ -20,6 +20,10 @@ All of those things come from protocols built on top of TCP.
 
 Instead of using an existing protocol, I wanted to build one myself and understand exactly how framing, parsing, state, and error handling actually work.
 
+## Demo Video
+
+[![Custom TCP Protocol Demo](https://img.youtube.com/vi/GbwWYkSKgL8/0.jpg)](https://youtu.be/GbwWYkSKgL8)
+
 ## What this project does
 
 CustomTcpProtocol implements a small but complete application-level protocol with:
@@ -199,9 +203,7 @@ CONNECT acknowledged
 DATA acknowledged
 ```
 
-## Demo Video
 
-Check out this YouTube video for a visual explanation of the protocol: [Custom TCP Protocol Demo](https://youtu.be/GbwWYkSKgL8)
 
 ## What this project demonstrates
 

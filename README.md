@@ -199,19 +199,3 @@ CONNECT acknowledged
 DATA acknowledged
 ```
 
-## What this project demonstrates
-
-- How message boundaries are created on top of TCP
-- Why buffering is required for correctness
-- How binary framing and parsing actually work
-- How protocol rules are enforced with state machines
-- How real systems report errors instead of failing silently
-
-## What this project intentionally does not do
-
-- Encryption or TLS
-- Compression
-- Performance tuning
-- Production hardening
-
-The focus is correctness, clarity, and understanding.

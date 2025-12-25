@@ -13,7 +13,7 @@ export const SERVER_STATES = {
   CLOSED: "CLOSED",
 };
 
-// ---------- Client State Machine ----------
+// Client State Machine
 export class ClientStateMachine {
   constructor() {
     this.state = CLIENT_STATES.DISCONNECTED;
@@ -38,7 +38,7 @@ export class ClientStateMachine {
   }
 }
 
-// ---------- Server State Machine ----------
+// Server State Machine
 export class ServerStateMachine {
   constructor() {
     this.state = SERVER_STATES.NEW;

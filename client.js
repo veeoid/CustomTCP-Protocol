@@ -1,22 +1,56 @@
-import {createConnection} from "node:net";
+import { createConnection } from "node:net";
 
-const PORT = '9000';
+import { ProtocolParser } from "./protocol/parser.js";
+import { buildMessage } from "./protocol/framing.js";
+import { MESSAGE_TYPES } from "./protocol/constants.js";
 
-const client = createConnection({port:PORT}, () => {
-    console.log('Client connected to Server');
+const client = createConnection({ port: 9000 }, () => {
+  console.log("Client connected");
 
-    const message = Buffer.from("Hello from client");
-    client.write(message);
+  const id = Buffer.from("client-1");
+  const payload = Buffer.concat([
+    Buffer.from([id.length]),
+    id,
+  ]);
+
+  const connect = buildMessage(
+    MESSAGE_TYPES.CONNECT,
+    payload
+  );
+
+  client.write(connect);
 });
 
-client.on('data', (chunk) => {
-    console.log("Client received:", chunk);
-})
+const parser = new ProtocolParser((message) => {
+  const { type, payload } = message;
 
-client.on("end", () => {
-    console.log('Disconnected from server');
-})
+  if (type === MESSAGE_TYPES.ACK) {
+    const acked = payload.readUInt8(0);
 
-client.on("error", (err) => {
-    console.log('Connection Error:', err)
-})
+    if (acked === MESSAGE_TYPES.CONNECT) {
+      console.log("CONNECT acknowledged");
+
+      const data = buildMessage(
+        MESSAGE_TYPES.DATA,
+        Buffer.from("Hello from DATA")
+      );
+
+      client.write(data);
+    }
+
+    if (acked === MESSAGE_TYPES.DATA) {
+      console.log("DATA acknowledged");
+    }
+  }
+
+  if (type === MESSAGE_TYPES.ERROR) {
+    const code = payload.readUInt8(0);
+    const len = payload.readUInt8(1);
+    const msg = payload.slice(2, 2 + len).toString();
+
+    console.error(`ERROR (${code}): ${msg}`);
+    client.end();
+  }
+});
+
+client.on("data", (chunk) => parser.push(chunk));
